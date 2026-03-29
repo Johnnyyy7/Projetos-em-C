@@ -1,0 +1,101 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <stdbool.h>
+
+
+bool buscarValor (int **matriz, int linha, int coluna, int valor)
+{
+    for (int i = 0; i < linha; i++)
+    {
+        for (int j = 0; j < coluna; j++)
+        {
+            if (matriz[i][j] == valor)
+            {
+                return true; // return 1;
+            }
+        }
+    }
+    return false; // return 0;
+}
+
+
+int main()
+{
+
+
+
+
+    setlocale(LC_ALL, "Portuguese");
+
+
+    /*4.Escreva um programa que aloque dinamicamente uma matriz (de inteiros) de dimensões definidas pelo usuário e a leia.
+    Em seguida, implemente uma função que receba um valor, retorne 1 caso o valor esteja na matriz ou retorne zero caso não esteja na matriz.*/
+
+
+    int **matriz;
+    int linha, coluna;
+    int valorBusca, resultado;
+
+
+    printf("Digite o número de linhas da matriz: ");
+    scanf("%i", &linha);
+    printf("Digite o número de colunas: ");
+    scanf("%i", &coluna);
+
+
+    matriz = (int **) malloc(linha * sizeof(int *)); // aloca o vetor de ponteiros (as linhas).
+
+
+    for (int i = 0; i < linha; i++)
+    {
+        matriz[i] = (int *) malloc(coluna * sizeof(int)); // aloca o vetor de inteiros para cada linha (as colunas).
+    }
+
+
+    printf("\n--- PREENCHENDO A MATRIZ ---\n");
+    for (int i = 0; i < linha; i++)
+    {
+        for (int j = 0; j < coluna; j++)
+        {
+            printf("Informe os valores da matriz [%i] [%i]: ", i, j);
+            scanf("%i", &matriz[i][j]);
+        }
+    }
+
+
+    printf("\n--- MATRIZ COMPLETA ---\n");
+    for (int i = 0; i < linha; i++)
+    {
+        for (int j = 0; j < coluna; j++)
+        {
+            printf("%i\t", matriz[i][j]);
+        }
+            printf("\n");
+    }
+
+
+    printf("\nInforme o valor que deseja biscar na matriz: ");
+    scanf("%i", &valorBusca);
+
+
+    resultado = buscarValor(matriz, linha, coluna, valorBusca);
+
+
+    if (resultado == true)
+    {
+        printf("\nO valor %i foi encontrado na matriz! :)", valorBusca);
+    }
+    else
+    {
+        printf("\nO valor %i não foi encontrado na matriz. :(", valorBusca);
+    }
+    // liberando a matriz
+    for (int i = 0; i < linha; i++)
+    {
+        free(matriz[i]);
+    }
+        free(matriz);
+       
+    return 0;
+}
