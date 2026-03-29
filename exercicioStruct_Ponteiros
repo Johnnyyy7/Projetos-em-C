@@ -1,0 +1,158 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <string.h>
+
+#define Max_Pessoas 30
+
+
+struct Pessoa
+{
+    char nome[50];
+    int anoNascimento;
+    char signoChines[20];
+};
+
+
+const char* sChines(int ano_Nascimento)
+{
+    static const char *signos[12] =
+    {
+        "Macaco", "Galo", "Cão", "Porco", "Rato", "Boi",
+        "Tigre", "Coelho", "Dragão", "Serpente", "Cavalo", "Cabra"
+    };
+
+    int indice = ano_Nascimento % 12;
+
+    return signos[indice];
+}
+
+
+void cadastroPessoas(struct Pessoa pessoas[], int *qtdPessoas)
+{
+    if (*qtdPessoas >= Max_Pessoas)
+    {
+        printf("Limite máximo de pessoas atingido! %i.", Max_Pessoas);
+        return;
+    }
+    int i = *qtdPessoas;
+
+
+    printf("\n--- CADASTRO PESSOA (pessoa: %i) ---\n", i + 1);
+    printf("Nome: ");
+    scanf(" %[^\n]", pessoas[i].nome);
+    getchar();
+
+    printf("Ano de nascimento: ");
+    scanf("%i", &pessoas[i].anoNascimento);
+    getchar();
+
+    const char* nomeSigno = sChines(pessoas[i].anoNascimento);
+    strcpy(pessoas[i].signoChines, nomeSigno);
+
+    printf("Signo chinês: %s\n", pessoas[i].signoChines);
+
+    (*qtdPessoas)++;
+}
+
+void exibirPessoas(struct Pessoa pessoas[], int qtdPessoas)
+{
+    if (qtdPessoas == 0)
+    {
+        printf("\nNenhuma pessoa cadastrada.");
+        return;
+    }
+
+    printf("\n--- LISTAS DE PESSOAS CADASTRADAS (%i) ---\n", qtdPessoas);
+    for (int i = 0; i < qtdPessoas; i++)
+    {
+        printf("\n--- DADOS PESSOA %i ---\n", i + 1);
+        printf("Nome: %s\n", pessoas[i].nome);
+        printf("Ano de Nascimento: %i\n", pessoas[i].anoNascimento);
+        printf("Signo chinês: %s\n", pessoas[i].signoChines);
+    }
+}
+
+void excluirPessoa(struct Pessoa pessoas[], int *qtdPessoas)
+{
+    if (*qtdPessoas == 0)
+    {
+        printf("\nNenhuma pessoa para excluir.\n");
+        return;
+    }
+    char nomeBusca[50];
+    printf("\n--- EXCLUIR PESSOA ---\n");
+    printf("Digite o nome da pessoa a excluir: ");
+    scanf(" %[^\n]", nomeBusca);
+    getchar();
+
+    int indiceEncontrado = -1;
+
+    for (int i = 0; i < *qtdPessoas; i++)
+    {
+        if (strcmp(pessoas[i].nome, nomeBusca) == 0)
+        {
+            indiceEncontrado = i;
+            break;
+        }
+    }
+
+    if (indiceEncontrado == -1)
+    {
+        printf("Pessoa com o nome '%s' não encontrada.\n", nomeBusca);
+        return;
+    }
+
+    for (int i = indiceEncontrado; i < (*qtdPessoas - 1); i++)
+    {
+        pessoas[i] = pessoas[i + 1];
+    }
+
+    (*qtdPessoas)--;
+    printf("Pessoa '%s' excluída.\n", nomeBusca);
+}
+
+
+int main()
+{
+    setlocale(LC_ALL, "Portuguese");
+
+    struct Pessoa pessoas[Max_Pessoas];
+
+    int qtdPessoa = 0;
+    int opcao;
+
+    do
+    {
+        printf("\n\n--- MENU ---\n");
+        printf(" 1. Cadastrar uma pessoa\n");
+        printf(" 2. Exibir pessoas cadastradas\n");
+        printf(" 3. Excluir pessoa pelo nome\n");
+        printf(" 0. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%i", &opcao);
+
+        getchar();
+
+        switch (opcao)
+        {
+            case 1:
+                cadastroPessoas(pessoas, &qtdPessoa);
+                break;
+            case 2:
+                exibirPessoas(pessoas, qtdPessoa);
+                break;
+            case 3:
+                excluirPessoa(pessoas, &qtdPessoa);
+                break;
+            case 0:
+                printf("Saindo...");
+                break;
+            default:
+                printf("Opção inválida, tente novamente.");
+                break;
+        }
+    } while (opcao != 0);
+
+    return 0;
+}
