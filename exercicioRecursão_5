@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <math.h>
+#include <string.h>
+
+int palindromo (char str[], int inicio, int fim)
+{
+    if (inicio >= fim)
+    {
+        return 1;
+    }
+    if (str[inicio] != str[fim])
+    {
+        return 0;
+    }
+
+    return palindromo (str, inicio + 1, fim - 1);
+}
+
+int main()
+{
+
+
+    setlocale(LC_ALL, "Portuguese");
+
+
+    /*Crie uma função recursiva que verifique se uma string é um palíndromo, ou seja,
+    se é igual a ela mesma de trás para frente. A função deve comparar o primeiro e o último
+    caractere da string, e, se forem iguais, chamar a si mesma para os caracteres internos.
+    Exemplo: "radar"
+    Saída: "É um palíndromo"*/
+
+    char nome [30];
+    int tamanho_palavra, resultado;
+
+    printf("Informe um nome para verificar se ela é palíndromo: ");
+    scanf("%s", nome);
+
+    tamanho_palavra = strlen(nome);
+
+    resultado = palindromo(nome, 0, tamanho_palavra - 1);
+
+    if (resultado == 1)
+    {
+        printf("\n %s é um palíndromo \n", nome);
+    }
+    else
+    {
+        printf("\n %s não é um palíndromo \n", nome);
+    }
+
+return 0;
+}
