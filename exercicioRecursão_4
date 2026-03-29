@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <math.h>
+#define tamanho 10
+
+
+int menorNum (int vetor [], int num)
+{
+    if  (num == 1)
+    {
+        return vetor[0];
+    }
+    else
+    {
+        int menor = menorNum (vetor + 1, num - 1);
+        if (vetor[0] < menor)
+        {
+            return vetor[0];
+        }
+        else
+        {
+            return menor;
+        }
+    }
+}
+
+
+int main()
+{
+
+
+    setlocale(LC_ALL, "Portuguese");
+
+
+        /*4. Crie um programa que contenha uma função recursiva para encontrar o menor elemento em um vetor.*/
+
+    int vetor [tamanho], menorNumero;
+
+    printf("Infomre um número: \n");
+
+
+    for (int i = 0; i < tamanho; i++)
+    {
+        scanf("%i", &vetor[i]);
+    }
+
+    menorNumero = menorNum(vetor, tamanho);
+
+    printf("O menor número é %i\n", menorNumero);
+
+return 0;
+}
