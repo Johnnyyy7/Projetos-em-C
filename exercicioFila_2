@@ -1,0 +1,277 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+
+
+typedef struct
+{
+    char nome [50];
+    int codigo;
+} Produto;
+
+
+
+
+typedef struct
+{
+    int capacidade;
+    int tamanho;
+    int inicio;
+    int fim;
+    Produto *elementos;
+} Fila;
+
+
+
+
+
+
+
+
+// Protótipos das funções
+void inicializarFila(Fila *fila, int capacidade)
+{
+    fila->capacidade = capacidade;
+    fila->tamanho = 0;
+    fila->inicio = 0;
+    fila->fim = -1;
+    fila->elementos = (Produto *)malloc(capacidade * sizeof(Produto));
+}
+
+
+
+
+void mostrarEstoque (Fila *fila)
+{
+    if (fila -> tamanho > 0)
+    {
+        printf("Produtos inseridos: \n");
+        int i;
+        for (i = 0; i < fila -> tamanho; i++)
+        {
+            int indice = (fila -> inicio + i) % fila -> capacidade;
+            printf("[%i] Produto: %s | Código: %i\n", i + 1, fila -> elementos[indice].nome, fila -> elementos[indice].codigo);
+        }
+    }
+    else
+    {
+        printf("\n--- Estoque vazio ---\n");
+    }
+}
+
+
+
+
+void adicionarProduto (Fila *fila, Produto p)
+{
+    if (fila -> tamanho < fila -> capacidade)
+    {
+        fila -> fim = (fila -> fim + 1) % fila -> capacidade;
+        fila -> elementos[fila -> fim] = p; // copia a struct inteira para a array
+        fila -> tamanho++;
+        printf("Produto: %s adicionado.\n", p.nome);
+
+
+
+
+        mostrarEstoque(fila);
+    }
+}
+
+
+
+
+void removerProduto (Fila *fila)
+{
+    if (fila -> tamanho > 0)
+    {
+        Produto removido = fila -> elementos[fila -> inicio];
+        fila -> inicio = (fila -> inicio + 1) % fila -> capacidade;
+        fila -> tamanho--;
+
+
+
+
+        printf("Produto: %s (código: %i) foi removido do estoque.\n", removido.nome, removido.codigo);
+
+
+
+
+        mostrarEstoque(fila);
+    }
+}
+
+
+
+
+void buscarProduto (Fila *fila, int codigoBusca)
+{
+    if (fila -> tamanho == 0)
+    {
+        printf("Estoque vazio.\n");
+        return;
+    }
+
+
+
+
+    int encontrado = 0;
+
+
+
+
+    for (int i = 0; i < fila -> tamanho; i++)
+    {
+        int indice = (fila -> inicio + i) % fila -> capacidade;
+        if (fila -> elementos[indice].codigo == codigoBusca)
+        {
+            printf("\n---> Produto encontrado! \n");
+            printf("Nome: %s\n", fila -> elementos[indice].nome);
+            printf("Código: %i\n", fila -> elementos[indice].codigo);
+            printf("Posição na fila: %i\n", i + 1);
+            encontrado = 1;
+            break;
+        }
+    }
+    if (!encontrado)
+    {
+        printf("Código %i inválido!\n");
+    }
+}
+
+
+
+
+int main()
+{
+    setlocale(LC_ALL, "Portuguese");
+
+
+
+
+
+
+
+
+    /*2. Fazer um programa em C, de cadastro de produtos de um estoque usando struct de FILA para entrada e saída.
+Cada produto possui Nome e Código (usar struct também para essa definição).
+Toda vez que um produto for adicionado ou removido, mostra-se a FILA. (slide explicando com uso de struct em anexo)
+
+
+A interface deve conter como opções de Menu:
+
+
+
+
+Digite a capacidade do estoque: __
+=== Menu ===
+1. Adicionar produto ao estoque
+2. Remover produto do estoque
+3. Buscar produto pelo código
+0. Sair
+Escolha uma opcao:*/
+
+
+
+
+
+
+
+
+    Fila fila;
+    int capacidade, opcao, codigoBusca;
+    Produto novoProduto;
+
+
+
+
+
+
+
+
+    printf("Digite a capacidade do estoque: ");
+    scanf("%i", &capacidade);
+
+
+
+
+
+
+
+
+    inicializarFila(&fila, capacidade);
+
+
+
+
+
+
+
+
+    do
+    {
+        printf("\nMenu de Opções:\n");
+        printf("1 - Adicionar produto ao estoque\n");
+        printf("2 - Remover produto do estoque\n");
+        printf("3 - Buscar produto pelo código\n");
+        printf("0. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+
+
+
+
+
+
+
+        switch (opcao)
+        {
+            case 1:
+                printf("\n--- NOVO PRODUTO ---\n");
+
+
+                printf("Digite o código do produto: ");
+                scanf("%i", &novoProduto.codigo);
+
+
+                printf("Informe o nome do produto: ");
+                scanf(" %[^\n]", &novoProduto.nome);
+
+
+                adicionarProduto(&fila, novoProduto);
+                break;
+            case 2:
+                removerProduto(&fila);
+                break;
+            case 3:
+                printf("Informe o código do produto: ");
+                scanf("%i", &codigoBusca);
+                buscarProduto(&fila, codigoBusca);
+                break;
+            case 0:
+                printf("Encerrando o programa.\n");
+                break;
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+        }
+    } while (opcao != 0);
+
+
+
+
+
+
+
+
+    free(fila.elementos);
+
+
+
+
+
+
+
+
+    return 0;
+}
