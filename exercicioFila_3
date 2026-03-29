@@ -1,0 +1,158 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <string.h>
+
+typedef struct
+{
+    char nome[100];
+    int senha;
+    int prioridade; // 1 para prioritário, 0 para não prioritário
+} Pessoa;
+
+typedef struct
+{
+    int capacidade;
+    int tamanho;
+    int inicio;
+    int fim;
+    Pessoa *elementos;
+} Fila;
+
+// --- Protótipos das funções ---
+
+void inicializarFila(Fila *fila, int capacidade)
+{
+    fila->capacidade = capacidade;
+    fila->tamanho = 0;
+    fila->inicio = 0;
+    fila->fim = -1;
+    fila->elementos = (Pessoa*)malloc(capacidade * sizeof(Pessoa));
+}
+
+
+void inserirPessoas (Fila *fila, char *nome, int prioridade)
+{
+    if (fila->tamanho == fila->capacidade)
+    {
+        printf("Fila cheia! Nao e possivel inserir mais pessoas.\n");
+        return;
+    }
+
+
+    Pessoa p;
+    strcpy(p.nome, nome);  // Copia o nome para a estrutura Pessoa
+    p.prioridade = prioridade; // Define a prioridade
+
+    static int senhaAtual = 1; // Variável estática para gerar senhas
+    p.senha = senhaAtual++;
+
+    if (p.prioridade == 1)
+    {
+        fila->inicio = (fila->inicio - 1 + fila->capacidade) % fila->capacidade; // Atualiza o início para inserir na frente
+        fila->elementos[fila->inicio] = p; // Insere a pessoa na frente da fila
+        printf(">> PRIORIDADE: %s (Senha %d) furou a fila.\n", p.nome, p.senha);
+    }
+    else
+    {
+        fila->fim = (fila->fim + 1) % fila->capacidade; // Atualiza o fim para inserir no final
+        fila->elementos[fila->fim] = p; // Insere a pessoa no final da fila
+        printf(">> NORMAL: %s (Senha %d) entrou no fim da fila.\n", p.nome, p.senha);
+    }
+
+    fila->tamanho++;
+}
+
+void atenderPessoa (Fila *fila)
+{
+    if (fila->tamanho == 0)
+    {
+        printf("Fila vazia! Nao ha pessoas para atender.\n");
+        return;
+    }
+
+    Pessoa atendida = fila->elementos[fila->inicio]; // Pega a pessoa no início
+
+    fila->inicio = (fila->inicio + 1) % fila->capacidade; // Atualiza o início
+    fila->tamanho--;
+
+    printf("\n--- ATENDIMENTO ---\n");
+    printf("Chamando Senha: %d\n", atendida.senha);
+    printf("Nome: %s\n", atendida.nome);
+    printf("Tipo: %s\n", atendida.prioridade ? "Prioridade" : "Normal");
+    printf("-------------------\n");
+}
+
+void exibirFila (Fila *fila)
+{
+    if (fila->tamanho == 0)
+    {
+        printf("Fila vazia!\n");
+        return;
+    }
+    printf("\n--- FILA ATUAL (%d pessoas) ---\n", fila->tamanho);
+    for (int i = 0; i < fila->tamanho; i++)
+    {
+        int indice = (fila->inicio + i) % fila->capacidade; // Calcula o índice circular
+        Pessoa p = fila->elementos[indice]; // Pega a pessoa na posição calculada
+        printf("[%d] Senha: %02d | Nome: %-10s | %s\n", i + 1, p.senha, p.nome, p.prioridade ? "PRIORIDADE" : "Normal");
+    }
+    printf("-------------------------------\n");
+}
+
+int main()
+{
+    setlocale(LC_ALL, "Portuguese");
+
+    Fila fila;
+    int capacidade, opcao, prioridade;
+    char nome[100];
+
+    printf("Digite a capacidade da fila: ");
+    scanf("%d", &capacidade);
+
+    inicializarFila(&fila, capacidade);
+
+    do
+    {
+        printf("\n=== Menu ===\n");
+        printf("1 - Inserir pessoa\n");
+        printf("2 - Atender pessoa\n");
+        printf("3 - Exibir fila\n");
+        printf("0 - Sair\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+
+        switch (opcao)
+        {
+            case 1:
+                printf("Digite o nome: ");
+                scanf(" %[^\n]", nome);
+
+                printf("Possui prioridade? (1-Sim / 0-Nao): ");
+                scanf("%i", &prioridade);
+
+                inserirPessoas(&fila, nome, prioridade);
+                break;
+
+            case 2:
+                atenderPessoa(&fila);
+                break;
+
+            case 3:
+                exibirFila(&fila);
+                break;
+
+            case 0:
+                printf("Encerrando...\n");
+                break;
+
+            default:
+                printf("Opcao invalida.\n");
+        }
+    } while (opcao != 0);
+
+    free(fila.elementos);
+
+    return 0;
+}
