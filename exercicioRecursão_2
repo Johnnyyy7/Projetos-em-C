@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <math.h>
+
+
+void somaNum (int num)
+{
+    if  (num < 0 )
+    {
+        return;
+    }
+
+
+    somaNum (num - 1);
+    printf("%i\n", num);
+}
+
+
+int main()
+{
+
+
+        setlocale(LC_ALL, "Portuguese");
+
+
+        /*Faça uma função recursiva que receba um número inteiro positivo N e imprima todos os
+        números naturais de 0 até N em ordem crescente.*/
+       
+       int num;
+       
+       printf("Infomre um número: ");
+       scanf("%i", &num);
+   
+       
+       printf("Números naturais de 0 até %i: \n", num);
+
+
+       somaNum(num);
+
+
+    return 0;
+}
