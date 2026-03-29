@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <math.h>
+
+
+int somaNum (int num)
+{
+    if  (num < 0 )
+    {
+        return 0;
+    }
+
+
+    return num + somaNum (num - 1);
+
+
+}
+
+
+int main()
+{
+
+
+        setlocale(LC_ALL, "Portuguese");
+
+
+        /*Crie uma função recursiva que receba um número inteiro positivo N e calcule o somatório dos números de 1 a N.*/
+       
+       int num, somaNumero;
+       
+       printf("Infomre um número: ");
+       scanf("%i", &num);
+   
+       somaNumero = somaNum(num);
+       printf("A soma de 1 até %i é: %i\n", num, somaNumero);
+
+
+
+
+    return 0;
+}
