@@ -1,0 +1,331 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+ 
+
+
+
+
+typedef struct
+{
+    int capacidade;
+    int tamanho;
+    int inicio;
+    int fim;
+    int *elementos;
+} Fila;
+
+
+
+
+// Protótipos das funções
+void inicializarFila(Fila *fila, int capacidade)
+{
+    fila->capacidade = capacidade;
+    fila->tamanho = 0;
+    fila->inicio = 0;
+    fila->fim = -1;
+    fila->elementos = (int *)malloc(capacidade * sizeof(int));
+}
+
+
+
+
+void adicionarNaFila(Fila *fila, int elemento)
+{
+    if (fila->tamanho < fila->capacidade)
+    {
+        fila->fim = (fila->fim + 1) % fila->capacidade; //%50
+        fila->elementos[fila->fim] = elemento;
+        fila->tamanho++;
+        printf("Elemento adicionado com sucesso.\n");
+    }
+    else
+    {
+        printf("Fila cheia. Não é possível adicionar mais elementos.\n");
+    }
+}
+
+
+
+
+int removerDaFila(Fila *fila)
+{
+    if (fila->tamanho > 0)
+    {
+        int elemento = fila->elementos[fila->inicio];
+        fila->inicio = (fila->inicio + 1) % fila->capacidade;
+        fila->tamanho--;
+        return elemento;
+    }
+    else
+    {
+        printf("Fila vazia. Não é possível remover elementos.\n");
+        return -1;
+    }
+}
+
+
+
+
+
+
+
+
+void mostrarFila(Fila fila)
+{
+    if (fila.tamanho > 0)
+    {
+        printf("Elementos da fila: ");
+        int i;
+        for (i = 0; i < fila.tamanho; i++)
+        {
+            int indice = (fila.inicio + i) % fila.capacidade;
+            printf("%d ", fila.elementos[indice]);
+        }
+        printf("\n");
+    }
+    else
+    {
+        printf("Fila vazia.\n");
+    }
+}
+
+
+
+
+
+
+
+
+void esvaziarFila(Fila *fila)
+{
+    fila->tamanho = 0;
+    fila->inicio = 0;
+    fila->fim = -1;
+}
+
+
+
+
+void reversoFila(Fila *fila)
+{
+    if (fila -> tamanho > 1) // Verifica se há elementos suficientes para precisar inverter
+    {
+        int *temp = (int *)malloc(fila -> tamanho * sizeof(int)); // array temporário para armazenar os elementos invertidos
+        int i, j = 0;
+
+
+        for (i = 0; i < fila -> tamanho; i++)
+        { // Copia os elementos da fila para o array temporário (na ordem atual)
+            int indice = (fila -> inicio + i) % fila -> capacidade;
+            temp[j++] = fila -> elementos[indice];
+        }
+       
+        for (i = 0; i < fila -> tamanho; i++) // devolve a fila reversa
+        { // O primeiro da fila (inicio) recebe o ultimo do temp, e assim por diante
+            int indice = (fila -> inicio + i) % fila -> capacidade;
+            fila -> elementos[indice] = temp[fila -> tamanho - 1 - i]; // Inverte os elementos na fila original
+        }
+        free(temp);
+        printf("Fila invertida com sucesso!\n");
+    }
+    else
+    {
+        printf("Não existe elementos para fazer o reverso.\n");
+    }
+
+
+}
+
+
+
+
+void imprimirParesFila(Fila fila)
+{
+    if (fila.tamanho > 0)
+    {
+        printf("números pares na fila: ");
+
+
+        for (int i = 0; i < fila.tamanho; i++)
+        {
+            int indice = (fila.inicio + i) % fila.capacidade; // Calcula o índice correto na fila circular
+            if (fila.elementos[indice] % 2 == 0)
+            {
+                printf("%i ", fila.elementos[indice]);
+            }
+        }
+    }
+}
+
+
+
+
+int somarElementosFila (Fila fila)
+{
+    int soma = 0;
+    for (int i = 0; i < fila.tamanho; i++)
+    {
+        int indice = (fila.inicio + i) % fila.capacidade;
+        soma += fila.elementos[indice];
+    }
+    return soma;
+}
+
+
+void multiplicarElementosFila (Fila *fila, int multiplicador)
+{
+    if (fila -> tamanho > 0)
+    {
+        for (int i = 0; i < fila -> tamanho; i++)
+        {
+            int indice = (fila -> inicio + i) % fila -> capacidade;
+            fila -> elementos[indice] = fila -> elementos[indice] * multiplicador;
+        }
+            printf("Todos os elementos foram multiplicados por %i.\n", multiplicador);
+    }
+}
+
+
+void trocarElementos (Fila *fila)
+{
+    if (fila -> tamanho >= 2)
+    {
+        int temp = fila -> elementos [fila -> inicio];
+        fila -> elementos [fila -> inicio] = fila -> elementos [fila -> fim];
+        fila -> elementos [fila -> fim] = temp;
+        printf("Primeiro e ultimo elemento trocado com sucesso!\n");
+    }
+    else
+    {
+        printf("Elementos insuficientes para a troca (minimo 2).\n");
+    }
+}
+
+
+int main()
+{
+    setlocale(LC_ALL, "Portuguese");
+
+
+
+
+    /*1. Fazer um programa usando estrutura simples de Fila com números de elementos.
+Para cada chamada no Menu abaixo, deverão ser implementadas funções. (início da implementação em anexo)
+
+
+
+
+Digite a capacidade da fila:__
+=== Menu ===
+1. Adicionar Fila
+2. Remover Fila
+3. Mostrar Fila
+4. Esvaziar Fila
+5. Reverso
+6. Imprimir números pares da fila
+7. Somar elementos da fila (todos)
+8. Multiplicar elementos da fila (por um número escolhido)
+9. Substituir primeiro pelo último*/
+
+
+
+
+    Fila fila;
+    int capacidade, opcao, elemento;
+
+
+
+
+    printf("Digite a capacidade da fila: ");
+    scanf("%d", &capacidade);
+
+
+
+
+    inicializarFila(&fila, capacidade);
+
+
+
+
+    do
+    {
+        printf("\nMenu de Opções:\n");
+        printf("1 - Adicionar na fila\n");
+        printf("2 - Remover da fila\n");
+        printf("3 - Mostrar fila\n");
+        printf("4 - Esvaziar fila\n");
+        printf("5 - Reverso\n");
+        printf("6 - Imprimir números pares da fila\n");
+        printf("7 - Somar elementos da fila\n");
+        printf("8 - multiplicar elementos da fila\n");
+        printf("9 - substituir primeiro pelo ultimo\n");
+        printf("0. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+
+
+
+        switch (opcao)
+        {
+            case 1:
+                printf("Digite o elemento a ser adicionado: ");
+                scanf("%d", &elemento);
+                adicionarNaFila(&fila, elemento);
+                break;
+            case 2:
+                elemento = removerDaFila(&fila);
+                if (elemento != -1)
+                {
+                    printf("Elemento removido: %d\n", elemento);
+                }
+                break;
+            case 3:
+                mostrarFila(fila);
+                break;
+            case 4:
+                esvaziarFila(&fila);
+                printf("Fila esvaziada.\n");
+                break;
+            case 5:
+            reversoFila(&fila);
+                printf("Fila invertida.\n");
+                break;
+            case 6:
+                imprimirParesFila(fila);
+                printf("\n");
+                break;
+            case 7:
+                if (fila.tamanho > 0)
+                {
+                    printf("A soma de todos os elementos: %i", somarElementosFila(fila));
+                }
+                break;
+            case 8:
+                int multi;
+                printf("Informe o valor para multiplicar todos os elementos da matriz: ");
+                scanf("%i", &multi);
+                multiplicarElementosFila(&fila, multi);
+                break;
+            case 9:
+                trocarElementos(&fila);
+            case 0:
+                printf("Encerrando o programa.\n");
+                break;
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+        }
+    } while (opcao != 0);
+
+
+
+
+    free(fila.elementos);
+
+
+
+
+    return 0;
+}
